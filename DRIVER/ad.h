@@ -24,6 +24,7 @@
    #define ADC_GPIO_PORTx_1                GPIOF
    #define DMA_CHANNELx_1             DMA_Channel_2
    #define DMA_STREAMx_1              DMA2_Stream0
+   #define DMA_IRQx_1 					DMA2_Stream0_IRQn
    #define ADCx_DR_ADDRESS_1          ((uint32_t)0x4001224C)
 /*
 	 #define ADCx_1                     ADC2
@@ -44,6 +45,7 @@
    #define ADC_GPIO_PORTx_2                GPIOA
    #define DMA_CHANNELx_2             DMA_Channel_0
    #define DMA_STREAMx_2              DMA2_Stream4
+    #define DMA_IRQx_2 					DMA2_Stream4_IRQn
    #define ADCx_DR_ADDRESS_2          ((uint32_t)0x4001204C)
 
 

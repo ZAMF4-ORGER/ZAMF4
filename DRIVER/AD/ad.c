@@ -17,6 +17,7 @@
 		ADC_CommonInitTypeDef ADC_CommonInitStructure;
 		DMA_InitTypeDef       DMA_InitStructure;
 		GPIO_InitTypeDef      GPIO_InitStructure;
+		NVIC_InitTypeDef NVIC_InitStructure;
 		
 		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2 |ADCx_CHANNEL_GPIO_CLK_1 | ADCx_CHANNEL_GPIO_CLK_2,ENABLE);  
 		RCC_APB2PeriphClockCmd(ADCx_CLK_1 | ADCx_CLK_2, ENABLE);
@@ -91,7 +92,20 @@
   		ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
   		ADC_InitStructure.ADC_NbrOfConversion = 1;
   		ADC_Init(ADCx_2, &ADC_InitStructure);
+		
+		NVIC_InitStructure.NVIC_IRQChannel = DMA_IRQx_1;
+		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=1;
+		NVIC_InitStructure.NVIC_IRQChannelSubPriority =1;		
+		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			
+		NVIC_Init(&NVIC_InitStructure);	
 
+		NVIC_InitStructure.NVIC_IRQChannel = DMA_IRQx_2;
+		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=1;
+		NVIC_InitStructure.NVIC_IRQChannelSubPriority =2;		
+		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			
+		NVIC_Init(&NVIC_InitStructure);	
+		
+		
 		DMA_ITConfig(DMA_STREAMx_1,DMA_IT_TC | DMA_IT_HT,ENABLE);
 		DMA_ITConfig(DMA_STREAMx_2,DMA_IT_TC | DMA_IT_HT,ENABLE);
 
@@ -108,7 +122,24 @@
 		ADC_Cmd(ADCx_2, ENABLE);
 
 	}
-	
+
+	void DMA2_Stream0_IRQHandler()
+	{
+		if((DMA_GetITStatus(DMA_STREAMx_1,DMA_IT_TCIF0)!=RESET)||
+			(DMA_GetITStatus(DMA_STREAMx_1,DMA_IT_HTIF0)!=RESET))
+		{
+
+		}
+	}
+
+	void DMA2_Stream4_IRQHandler()
+	{
+		if((DMA_GetITStatus(DMA_STREAMx_2,DMA_IT_TCIF4)!=RESET)||
+			(DMA_GetITStatus(DMA_STREAMx_2,DMA_IT_HTIF4)!=RESET))
+		{
+			
+		}
+	}
 	void ADC_Init_All()
 	{
 		ADC_Config();
