@@ -8,8 +8,8 @@
   ******************************************************************************/
 	#include "ad.h"
 	
-	__IO uint16_t uhADCxConvertedValue_1 = 0;
-	__IO uint16_t uhADCxConvertedValue_2 = 0;
+	__IO uint16_t uhADCxConvertedValue_1[1024] = 0;
+	__IO uint16_t uhADCxConvertedValue_2[1024] = 0;
 	
 	static void ADC_Config(void)
 	{
@@ -26,7 +26,7 @@
   		DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)ADCx_DR_ADDRESS_1;
   		DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&uhADCxConvertedValue_1;
   		DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-  		DMA_InitStructure.DMA_BufferSize = 1;
+  		DMA_InitStructure.DMA_BufferSize = 1024;
   		DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
   		DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Disable;
   		DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
@@ -44,7 +44,7 @@
   		DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)ADCx_DR_ADDRESS_2;
   		DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)&uhADCxConvertedValue_2;
   		DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-  		DMA_InitStructure.DMA_BufferSize = 1;
+  		DMA_InitStructure.DMA_BufferSize = 1024;
   		DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
   		DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Disable;
   		DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
@@ -70,7 +70,7 @@
 
 		/* ADC Common Init **********************************************************/
  		ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent;
-  		ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div2;
+  		ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div8;
   		ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;
   		ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;
   		ADC_CommonInit(&ADC_CommonInitStructure);
@@ -92,25 +92,9 @@
   		ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
   		ADC_InitStructure.ADC_NbrOfConversion = 1;
   		ADC_Init(ADCx_2, &ADC_InitStructure);
-		
-		NVIC_InitStructure.NVIC_IRQChannel = DMA_IRQx_1;
-		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=1;
-		NVIC_InitStructure.NVIC_IRQChannelSubPriority =1;		
-		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			
-		NVIC_Init(&NVIC_InitStructure);	
 
-		NVIC_InitStructure.NVIC_IRQChannel = DMA_IRQx_2;
-		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=1;
-		NVIC_InitStructure.NVIC_IRQChannelSubPriority =2;		
-		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			
-		NVIC_Init(&NVIC_InitStructure);	
-		
-		
-		DMA_ITConfig(DMA_STREAMx_1,DMA_IT_TC | DMA_IT_HT,ENABLE);
-		DMA_ITConfig(DMA_STREAMx_2,DMA_IT_TC | DMA_IT_HT,ENABLE);
-
-		ADC_RegularChannelConfig(ADCx_1, ADC_CHANNEL_1, 1, ADC_SampleTime_3Cycles);
-		ADC_RegularChannelConfig(ADCx_2, ADC_CHANNEL_2, 1, ADC_SampleTime_3Cycles);
+		ADC_RegularChannelConfig(ADCx_1, ADC_CHANNEL_1, 1, ADC_SampleTime_480Cycles);
+		ADC_RegularChannelConfig(ADCx_2, ADC_CHANNEL_2, 1, ADC_SampleTime_480Cycles);
 		
 		ADC_DMARequestAfterLastTransferCmd(ADCx_1, ENABLE);
 		ADC_DMARequestAfterLastTransferCmd(ADCx_2, ENABLE);
@@ -123,23 +107,6 @@
 
 	}
 
-	void DMA2_Stream0_IRQHandler()
-	{
-		if((DMA_GetITStatus(DMA_STREAMx_1,DMA_IT_TCIF0)!=RESET)||
-			(DMA_GetITStatus(DMA_STREAMx_1,DMA_IT_HTIF0)!=RESET))
-		{
-
-		}
-	}
-
-	void DMA2_Stream4_IRQHandler()
-	{
-		if((DMA_GetITStatus(DMA_STREAMx_2,DMA_IT_TCIF4)!=RESET)||
-			(DMA_GetITStatus(DMA_STREAMx_2,DMA_IT_HTIF4)!=RESET))
-		{
-			
-		}
-	}
 	void ADC_Init_All()
 	{
 		ADC_Config();
