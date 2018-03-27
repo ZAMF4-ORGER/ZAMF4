@@ -37,6 +37,14 @@
 			//printf("stm32 test ok\r\n");
 			//UART_SendString(UART4,"stm32 test ok\r\n");
 		}
+		if((DMA_GetITStatus(DMA_STREAMx_1,DMA_IT_TCIF0)!=RESET)||
+			(DMA_GetITStatus(DMA_STREAMx_1,DMA_IT_HTIF0)!=RESET)||
+			(DMA_GetITStatus(DMA_STREAMx_2,DMA_IT_TCIF4)!=RESET)||
+			(DMA_GetITStatus(DMA_STREAMx_2,DMA_IT_HTIF4)!=RESET))
+		{
+			DMA_ClearITPendingBit(DMA_STREAMx_1,DMA_IT_TCIF0 |DMA_IT_HTIF0);
+			DMA_ClearITPendingBit(DMA_STREAMx_2,DMA_IT_TCIF4 |DMA_IT_HTIF4);
+		}
 		if(TIME_FLAG.time_sub.flag_500hz)
 		{
 			TIME_FLAG.time_sub.flag_500hz=FALSE;

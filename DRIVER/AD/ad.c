@@ -92,6 +92,9 @@
   		ADC_InitStructure.ADC_NbrOfConversion = 1;
   		ADC_Init(ADCx_2, &ADC_InitStructure);
 
+		DMA_ITConfig(DMA_STREAMx_1,DMA_IT_TC | DMA_IT_HT,ENABLE);
+		DMA_ITConfig(DMA_STREAMx_2,DMA_IT_TC | DMA_IT_HT,ENABLE);
+
 		ADC_RegularChannelConfig(ADCx_1, ADC_CHANNEL_1, 1, ADC_SampleTime_3Cycles);
 		ADC_RegularChannelConfig(ADCx_2, ADC_CHANNEL_2, 1, ADC_SampleTime_3Cycles);
 		
